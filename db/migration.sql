@@ -19,8 +19,9 @@ CREATE SEQUENCE users_user_id_seq;
 
 CREATE TABLE users (
                 user_id BIGINT NOT NULL DEFAULT nextval('users_user_id_seq'),
-                username VARCHAR NOT NULL,
+                email VARCHAR NOT NULL,
                 password VARCHAR NOT NULL,
+                CONSTRAINT email UNIQUE (email),
                 CONSTRAINT user_id PRIMARY KEY (user_id)
 );
 
@@ -48,3 +49,7 @@ REFERENCES users (user_id)
 ON DELETE NO ACTION
 ON UPDATE NO ACTION
 NOT DEFERRABLE;
+
+GRANT ALL PRIVILEGES ON ALL TABLES IN SCHEMA public to me;
+GRANT ALL PRIVILEGES ON ALL SEQUENCES IN SCHEMA public to me;
+GRANT ALL PRIVILEGES ON ALL FUNCTIONS IN SCHEMA public to me;

@@ -11,10 +11,18 @@
   "license": "ISC",
   "dependencies": {
     "bcrypt": "^3.0.6",
+    "ejs": "^2.7.2",
     "express": "^4.17.1",
-    "pg": "^7.4.3"
+    "express-flash": "0.0.2",
+    "express-session": "^1.17.0",
+    "passport": "^0.4.0",
+    "passport-local": "^1.0.0",
+    "pg": "^7.4.3",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.5"
   },
   "devDependencies": {
+    "dotenv": "^8.2.0",
     "nodemon": "^1.19.1"
   }
 }
