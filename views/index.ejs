@@ -1,5 +1,16 @@
 <h1>Olar, <%= user ? user.email : 'pessoa' %>!</h1>
 
+<h2>Animes - Scores</h2>
+<ol>
+  <% animes.forEach((anime) => { %>
+    <li>
+      <a href="/animes/<%= anime.anime_id %>">
+        <%= anime.name %> - <%= anime.score %> *
+      </a>
+    </li>
+  <% }); %>
+</ol>
+
 <form action="/logout" method="get">
   <button type="submit">Log out</button>
 </form>

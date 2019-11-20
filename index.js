@@ -6,11 +6,11 @@ const rp = require('request-promise')
 const flash = require('express-flash')
 const session = require('express-session')
 const passport = require('passport')
-const initPassport = require('./passport-config.js')
+const initPassport = require('./configs/passport-config')
 
 initPassport(passport, 
   async email => {
-    return rp(process.env.BASE_URL + '/users/email/' + email)
+    return rp(process.env.REST_BASE_URL + '/users/email/' + email)
     .then(user => { return user != null && user.length > 0 ? JSON.parse(user) : null }) 
     .catch((err) => {
       console.log(err); 
@@ -18,7 +18,7 @@ initPassport(passport,
     });
   },
   async id => {
-    return rp(process.env.BASE_URL + '/users/' + id)
+    return rp(process.env.REST_BASE_URL + '/users/' + id)
     .then(user => { return user != null && user.length > 0 ? JSON.parse(user) : null }) 
     .catch((err) => {
       console.log(err); 
@@ -41,10 +41,20 @@ app.use(session({
 app.use(passport.initialize())
 app.use(passport.session())
 
-app.get('/', checkAuthenticated, (req, res) => {
-  console.log('req.user', req.user)
+app.get('/', checkAuthenticated, async(req, res) => {
   const user = req.user;
-  res.render('index.ejs', {user: user})
+  const animes = await rp(process.env.REST_BASE_URL + '/animes')
+    .then(animes => { return JSON.parse(animes) }) 
+    .catch((err) => {
+      console.log(err); 
+      return null;
+    });
+  console.log('req.user =', req.user)
+  console.log('animes =', animes)
+  res.render('index.ejs', {
+    user: user, 
+    animes: animes
+  })
 })
 
 app.get('/login', checkNotAuthenticated, (req, res) => {
@@ -70,7 +80,7 @@ app.post('/register', checkNotAuthenticated, (req, res) => {
   const { name, email, password } = req.body;
   request.post({
     'headers': { 'content-type': 'application/json' },
-    'url': process.env.BASE_URL + '/users',
+    'url': process.env.REST_BASE_URL + '/users',
     'body': JSON.stringify({ name, email, password })
   }, (error, response, body) => {
     if (error) {
@@ -99,13 +109,31 @@ function checkNotAuthenticated(req, res, next) {
   return next();
 }
 
+app.get('/animes/:id', async (req, res) => {
+  const anime = await rp(process.env.REST_BASE_URL + '/animes/' + req.params.id)
+    .then(animes => { return JSON.parse(animes) }) 
+    .catch((err) => {
+      console.log(err); 
+      return null;
+    });
+  
+  console.log('anime =', anime);
+  res.render('anime.ejs', {anime: anime})
+});
+
 
 //REST API
 
-app.get('/users', db.getUsers)
-app.get('/users/:id', db.getUserById)
-app.get('/users/email/:email', db.getUserByEmail)
-app.post('/users', db.createUser)
+//USERS
+app.get('/rest/users', db.getUsers)
+app.get('/rest/users/:id', db.getUserById)
+app.get('/rest/users/email/:email', db.getUserByEmail)
+app.post('/rest/users', db.createUser)
+
+//ANIMES
+app.get('/rest/animes', db.getAnimes)
+app.get('/rest/animes/:id', db.getAnimeById)
+
 
 // app.put('/users/:id', db.updateUser)
 // app.delete('/users/:id', db.deleteUser)

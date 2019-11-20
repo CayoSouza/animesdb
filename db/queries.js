@@ -90,11 +90,35 @@ const createUser = async (req, res) => {
 //   })
 // }
 
+//ANIMES
+
+const getAnimes = (req, res) => {
+  pool.query('SELECT * FROM animes ORDER BY anime_id ASC', (error, results) => {
+    if (error) {
+      throw error
+    }
+    res.status(200).json(results.rows)
+  })
+}
+
+const getAnimeById = async (req, res) => {
+  const { id } = req.params
+  pool.query('SELECT * FROM animes WHERE anime_id = $1', 
+  [id], (error, results) => {
+    if (error) {
+      throw error
+    }
+    res.status(200).json(results.rows[0])
+  })
+}
+
 module.exports = {
   getUsers,
   getUserById,
   getUserByEmail,
   createUser,
+  getAnimes,
+  getAnimeById,
   // updateUser,
   // deleteUser,
 }
