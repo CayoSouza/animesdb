@@ -41,25 +41,32 @@ app.use(session({
 app.use(passport.initialize())
 app.use(passport.session())
 
-app.get('/', (req, res) => {
-  res.render('index.ejs');
+app.get('/', checkAuthenticated, (req, res) => {
+  console.log('req.user', req.user)
+  const user = req.user;
+  res.render('index.ejs', {user: user})
 })
 
-app.get('/login', (req, res) => {
+app.get('/login', checkNotAuthenticated, (req, res) => {
   res.render('login.ejs');
 })
 
-app.post('/login', passport.authenticate('local', {
+app.post('/login', checkNotAuthenticated, passport.authenticate('local', {
   successRedirect: '/',
   failureRedirect: '/login',
   failureFlash: true
 }))
 
-app.get('/register', (req, res) => {
+app.get('/logout', (req, res) => {
+  req.logOut();
+  res.redirect('/login');
+})
+
+app.get('/register', checkNotAuthenticated, (req, res) => {
   res.render('register.ejs');
 })
 
-app.post('/register', (req, res) => {
+app.post('/register', checkNotAuthenticated, (req, res) => {
   const { name, email, password } = req.body;
   request.post({
     'headers': { 'content-type': 'application/json' },
@@ -75,6 +82,22 @@ app.post('/register', (req, res) => {
   });
 });
 
+
+function checkAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next()
+  }
+  console.log('User must be logged in!')
+  return res.redirect('/login');
+}
+
+function checkNotAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return res.redirect('/');
+  }
+
+  return next();
+}
 
 
 //REST API

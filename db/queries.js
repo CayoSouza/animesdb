@@ -26,7 +26,7 @@ const getUserById = async (req, res) => {
     if (error) {
       throw error
     }
-    res.status(200).json(results.rows)
+    res.status(200).json(results.rows[0])
   })
 }
 
