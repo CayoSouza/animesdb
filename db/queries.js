@@ -1,12 +1,13 @@
+require('dotenv').config()
 const Pool = require('pg').Pool
 const bcrypt = require('bcrypt')
 
 const pool = new Pool({
-  user: 'me',
-  host: 'localhost',
-  database: 'animesdb',
-  password: 'password',
-  port: 5432,
+  user: process.env.DB_USER,
+  host: process.env.DB_HOST,
+  database: process.env.DB_DATABASE,
+  password: process.env.DB_PASSWORD,
+  port: process.env.DB_PORT,
 })
 
 const getUsers = (req, res) => {
@@ -40,31 +41,21 @@ const getUserByEmail = async (req, res) => {
   })
 }
 
-// const getUserById = (req, res) => {
-//   const id = parseInt(req.params.user_id)
-
-//   pool.query('SELECT * FROM users WHERE user_id = $1', [id], (error, results) => {
-//     if (error) {
-//       throw error
-//     }
-//     res.status(200).json(results.rows)
-//   })
-// }
-
 const createUser = async (req, res) => {
   const { email, password } = req.body
   console.log(req.body)
 
   try {
-    const hashedPassword = await bcrypt.hash(password)
-    console.log('hashedPw', hashedPassword)
-    // const user = { email: req.body.email, password: hashedPassword }
-    
-    pool.query('INSERT INTO users (email, password) VALUES ($1, $2)', [email, hashedPassword], (error, results) => {
+    const hashedPassword = await bcrypt.hash(password, 10)
+    pool.query('INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *',
+    [email, hashedPassword], (error, results) => {
         if (error) {
           throw error
         }
-        res.status(201).send(`User added with ID: ${results}`)
+        res.status(201).send({
+          message: 'User successfully created',
+          created : results.rows[0]
+        })
     })
   } catch {
     res.status(500).send()
@@ -103,7 +94,6 @@ module.exports = {
   getUsers,
   getUserById,
   getUserByEmail,
-  // getUserById,
   createUser,
   // updateUser,
   // deleteUser,
