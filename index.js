@@ -109,20 +109,35 @@ function checkNotAuthenticated(req, res, next) {
   return next();
 }
 
-app.get('/animes/:id', async (req, res) => {
+app.get('/animes/:id', checkAuthenticated, async (req, res) => {
   const anime = await rp(process.env.REST_BASE_URL + '/animes/' + req.params.id)
     .then(animes => { return JSON.parse(animes) }) 
     .catch((err) => {
       console.log(err); 
       return null;
     });
+
+  console.log('req.user =', req.user)
+  const uri = process.env.REST_BASE_URL 
+  + '/ratings/anime/' + req.params.id + '/user/' + req.user.user_id;
+  console.log('uri =', uri)
+  const userRating = await rp(uri)
+    .then(userRating => { return JSON.parse(userRating) }) 
+    .catch((err) => {
+      console.log(err); 
+      return null;
+    });
   
   console.log('anime =', anime);
-  res.render('anime.ejs', {anime: anime})
+  console.log('userRating =', userRating);
+  res.render('anime.ejs', {
+    anime: anime,
+    userRating: userRating
+  })
 });
 
 
-//REST API
+//===================== REST API =====================//
 
 //USERS
 app.get('/rest/users', db.getUsers)
@@ -134,6 +149,11 @@ app.post('/rest/users', db.createUser)
 app.get('/rest/animes', db.getAnimes)
 app.get('/rest/animes/:id', db.getAnimeById)
 
+//RATINGS
+app.get('/rest/ratings/user/:id', db.getRatingsByUserId)
+app.get('/rest/ratings/anime/:anime_id/user/:user_id', db.getRatingsByAnimeIdAndUserId)
+app.post('/rest/user/:user_id/rate/anime/:anime_id/score/:score', db.rate)
+app.get('/rest/ratings', db.getRatings)
 
 // app.put('/users/:id', db.updateUser)
 // app.delete('/users/:id', db.deleteUser)

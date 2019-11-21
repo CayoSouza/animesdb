@@ -112,6 +112,58 @@ const getAnimeById = async (req, res) => {
   })
 }
 
+
+//RATINGS
+const getRatingsByUserId = async (req, res) => {
+  const { id } = req.params
+  pool.query('SELECT * FROM ratings WHERE user_id = $1', 
+  [id], (error, results) => {
+    if (error) {
+      throw error
+    }
+    res.status(200).json(results.rows[0])
+  })
+}
+
+const getRatingsByAnimeIdAndUserId = async (req, res) => {
+  const { anime_id, user_id } = req.params;
+  pool.query('SELECT * FROM ratings WHERE anime_id = $1 and user_id = $2', 
+  [anime_id, user_id], (error, results) => {
+    if (error) {
+      throw error
+    }
+    res.status(200).json(results.rows[0])
+  })
+}
+
+const rate = async (req, res) => {
+  const { anime_id, user_id, score } = req.params;
+
+  //TODO: should also be database wise
+  const allowedRatings = [0, 0.5, 1, 1.5, 2, 2.5, 3, 3.5, 4, 4.5, 5]
+  if (!allowedRatings.find((s) => s == score)){
+    return res.status(400).json({message: 'Score not allowed.'});
+  }
+
+  pool.query('INSERT INTO ratings(anime_id, user_id, score) VALUES($1, $2, $3)',
+  [anime_id, user_id, score], (error, results) => {
+    if (error) {
+      console.log(error)
+    }
+    res.status(200);
+  })
+}
+
+const getRatings = (req, res) => {
+  pool.query('SELECT * FROM ratings ORDER BY user_id ASC', (error, results) => {
+    if (error) {
+      throw error
+    }
+    res.status(200).json(results.rows)
+  })
+}
+
+
 module.exports = {
   getUsers,
   getUserById,
@@ -119,6 +171,10 @@ module.exports = {
   createUser,
   getAnimes,
   getAnimeById,
+  getRatingsByUserId,
+  getRatingsByAnimeIdAndUserId,
+  rate,
+  getRatings,
   // updateUser,
   // deleteUser,
 }

@@ -21,7 +21,7 @@
       <%= anime.season %>
     </li>
     <li>
-        <p>Your rating</p>
+        <p><%= userRating && userRating.length > 0 ? 'Your rating' : 'Rate now' %></p>
         <form action="" method="post">
           <select name="score" id="select-score">
             <option value="0">0</option>
@@ -36,13 +36,21 @@
             <option value="4.5">4.5</option>
             <option value="5">5</option>
           </select>
-          <button>Rate</button>
+          <button><%= userRating && userRating.length > 0 ? 'Rate again' : 'Rate' %></button>
         </form>
       </li>
 </ul>
-
+<input type="hidden" id="hidden-score" value="<%- userRating ? userRating.score : '-1' %>">
 <button onclick="location.href='/'">Back</button>
 
 <form action="/logout" method="get">
   <button type="submit">Log out</button>
 </form>
+
+<script>
+  let userScore = document.getElementById('hidden-score').value;
+  console.log('script user rating =', userScore)
+  Array.from(document.getElementById('select-score').options).forEach(e => {
+    if (e.value == parseFloat(userScore)) e.selected = true;
+  });
+</script>
