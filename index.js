@@ -77,11 +77,11 @@ app.get('/register', checkNotAuthenticated, (req, res) => {
 })
 
 app.post('/register', checkNotAuthenticated, (req, res) => {
-  const { name, email, password } = req.body;
+  const { username, email, password } = req.body;
   request.post({
     'headers': { 'content-type': 'application/json' },
     'url': process.env.REST_BASE_URL + '/users',
-    'body': JSON.stringify({ name, email, password })
+    'body': JSON.stringify({ username, email, password })
   }, (error, response, body) => {
     if (error) {
       console.dir(error);
@@ -122,7 +122,10 @@ app.get('/animes/:id', checkAuthenticated, async (req, res) => {
   + '/ratings/anime/' + req.params.id + '/user/' + req.user.user_id;
   console.log('uri =', uri)
   const userRating = await rp(uri)
-    .then(userRating => { return JSON.parse(userRating) }) 
+    .then(userRating => { 
+      return userRating != null && userRating.length > 0 ? 
+        JSON.parse(userRating) : null
+    }) 
     .catch((err) => {
       console.log(err); 
       return null;
@@ -136,6 +139,25 @@ app.get('/animes/:id', checkAuthenticated, async (req, res) => {
   })
 });
 
+app.post('/animes/:id', async (req, res) => {
+  const { score } = req.body;
+  const { user_id } = req.user;
+  const { id } = req.params;
+  console.log('id==',req.params.id)
+  const uri = `/user/${user_id}/rate/anime/${id}/score/${score}`;
+  console.log('uri =', uri);
+  var options = {
+    method: 'POST',
+    uri: process.env.REST_BASE_URL + uri,
+    json: true
+  }
+  await rp(options)
+    .then(res.redirect('/')) 
+    .catch(err => console.log);
+
+    // res.redirect('/');
+})
+
 
 //===================== REST API =====================//
 
@@ -147,6 +169,7 @@ app.post('/rest/users', db.createUser)
 
 //ANIMES
 app.get('/rest/animes', db.getAnimes)
+app.post('/rest/animes', db.createAnime)
 app.get('/rest/animes/:id', db.getAnimeById)
 
 //RATINGS

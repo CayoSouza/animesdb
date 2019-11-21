@@ -21,7 +21,7 @@
       <%= anime.season %>
     </li>
     <li>
-        <p><%= userRating && userRating.length > 0 ? 'Your rating' : 'Rate now' %></p>
+        <p><%= userRating && userRating.score != null > 0 ? 'Your rating' : 'Rate now' %></p>
         <form action="" method="post">
           <select name="score" id="select-score">
             <option value="0">0</option>
@@ -36,12 +36,15 @@
             <option value="4.5">4.5</option>
             <option value="5">5</option>
           </select>
-          <button><%= userRating && userRating.length > 0 ? 'Rate again' : 'Rate' %></button>
+          <button>
+            <%= userRating && userRating.score != null ? 'Rate again' : 'Rate' %>
+          </button>
+          <!-- <input type="hidden" name="anime_id" value="<%= anime.anime_id %>"> -->
         </form>
       </li>
 </ul>
 <input type="hidden" id="hidden-score" value="<%- userRating ? userRating.score : '-1' %>">
-<button onclick="location.href='/'">Back</button>
+<button onclick="location.href='/'">Home</button>
 
 <form action="/logout" method="get">
   <button type="submit">Log out</button>

@@ -19,6 +19,7 @@ CREATE SEQUENCE users_user_id_seq;
 
 CREATE TABLE users (
                 user_id BIGINT NOT NULL DEFAULT nextval('users_user_id_seq'),
+                username VARCHAR NOT NULL,
                 email VARCHAR NOT NULL,
                 password VARCHAR NOT NULL,
                 CONSTRAINT email UNIQUE (email),
@@ -78,10 +79,10 @@ INSERT INTO animes (anime_id, name, sinopse)
         (55, 'Full Metal Alchemist', 'troca equivalente'),
         (56, 'Demon Slayer', 'SAAAAI DA FRENTE, SATANÁAAAAAS');
 
-INSERT INTO users (user_id, email, password)
+INSERT INTO users (user_id, email, username, password)
     VALUES
-        (55, 'placeholder1@gmail.com', 'placeholder1'),
-        (56, 'placeholder2@gmail.com', 'placeholder2');
+        (55, 'placeholder1@gmail.com', 'placeholder', 'placeholder1'),
+        (56, 'placeholder2@gmail.com', 'placeholder', 'placeholder2');
 
 INSERT INTO ratings (user_id, anime_id, score)
     VALUES

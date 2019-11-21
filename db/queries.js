@@ -42,13 +42,13 @@ const getUserByEmail = async (req, res) => {
 }
 
 const createUser = async (req, res) => {
-  const { email, password } = req.body
+  const { username, email, password } = req.body
   console.log(req.body)
 
   try {
     const hashedPassword = await bcrypt.hash(password, 10)
-    pool.query('INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *',
-    [email, hashedPassword], (error, results) => {
+    pool.query('INSERT INTO users (username, email, password) VALUES ($1, $2, $3) RETURNING *',
+    [username, email, hashedPassword], (error, results) => {
         if (error) {
           throw error
         }
@@ -93,7 +93,7 @@ const createUser = async (req, res) => {
 //ANIMES
 
 const getAnimes = (req, res) => {
-  pool.query('SELECT * FROM animes ORDER BY anime_id ASC', (error, results) => {
+  pool.query('SELECT * FROM animes ORDER BY score DESC', (error, results) => {
     if (error) {
       throw error
     }
@@ -112,6 +112,26 @@ const getAnimeById = async (req, res) => {
   })
 }
 
+const createAnime = async (req, res) => {
+  const { name, sinopse, season } = req.body
+  console.log(req.body)
+
+  try {
+    pool.query('INSERT INTO animes (name, sinopse, season) VALUES ($1, $2, $3) RETURNING *',
+    [name, sinopse, season], (error, results) => {
+        if (error) {
+          console.log(error)
+        }
+        res.status(201).send({
+          message: 'Anime successfully created',
+          created : results.rows[0]
+        })
+    })
+  } catch {
+    res.status(500).send()
+  }
+
+}
 
 //RATINGS
 const getRatingsByUserId = async (req, res) => {
@@ -127,6 +147,7 @@ const getRatingsByUserId = async (req, res) => {
 
 const getRatingsByAnimeIdAndUserId = async (req, res) => {
   const { anime_id, user_id } = req.params;
+  console.log('entrei==', anime_id, user_id)
   pool.query('SELECT * FROM ratings WHERE anime_id = $1 and user_id = $2', 
   [anime_id, user_id], (error, results) => {
     if (error) {
@@ -144,13 +165,25 @@ const rate = async (req, res) => {
   if (!allowedRatings.find((s) => s == score)){
     return res.status(400).json({message: 'Score not allowed.'});
   }
-
-  pool.query('INSERT INTO ratings(anime_id, user_id, score) VALUES($1, $2, $3)',
-  [anime_id, user_id, score], (error, results) => {
+  
+  pool.query('SELECT * FROM ratings WHERE anime_id = $1 and user_id = $2', 
+  [anime_id, user_id], (error, results) => {
     if (error) {
-      console.log(error)
+      throw error
     }
-    res.status(200);
+
+    let query = 'INSERT INTO ratings(anime_id, user_id, score) VALUES($1, $2, $3)'
+    if (results.rows[0]) {
+      query = 'UPDATE ratings SET score = $3 WHERE anime_id = $1 and user_id = $2';
+    }
+    console.log('query selecionada==', query);
+    pool.query(query, [anime_id, user_id, score], (error, results) => {
+      if (error) {
+        console.log(error)
+      }
+
+      res.status(200);
+    })
   })
 }
 
@@ -170,6 +203,7 @@ module.exports = {
   getUserByEmail,
   createUser,
   getAnimes,
+  createAnime,
   getAnimeById,
   getRatingsByUserId,
   getRatingsByAnimeIdAndUserId,
