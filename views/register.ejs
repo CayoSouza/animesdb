@@ -1,17 +1,15 @@
-<h1>Register</h1>
-<form action="/register" method="POST">
-  <div>
-    <label for="username">Username</label>
-    <input type="text" id="username" name="username" required>
-  </div>
-  <div>
-    <label for="email">Email</label>
-    <input type="email" id="email" name="email" required>
-  </div>
-  <div>
-    <label for="password">Password</label>
-    <input type="password" id="password" name="password" required>
-  </div>
-  <button type="submit">Register</button>
-</form>
-<a href='/login'>Got an account? Login.</button>
+<% include header.ejs %>
+
+<section class="default-container">
+  <h1>Register</h1>
+  <form action="/register" method="POST">
+      <label for="username">Username</label>
+      <input type="text" id="username" name="username" required>
+      <label for="email">Email</label>
+      <input type="email" id="email" name="email" required>
+      <label for="password">Password</label>
+      <input type="password" id="password" name="password" required>
+    <button type="submit" class="btn btn-success">Register</button>
+  </form>
+  <a href='/login'>Got an account? Login.</button>
+</section>

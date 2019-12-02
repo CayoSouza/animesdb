@@ -1,16 +1,35 @@
-<h1>Olá, <%= user ? user.username : 'pessoa' %>!</h1>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <% include header.ejs %>
+  <% include nav.ejs %>
+  <title>AnimesDB - Home</title>
+</head>
+<body>
+  <!-- <h4>Olá, <%= user ? user.username : 'pessoa' %>!</h4> -->
+  <main>
+    <section class="default-container ranking">
+      <h1>Ranking</h1>
+      <ol>
+        <% animes.forEach((anime) => { %>
+          <li>
+            <a href="/animes/<%= anime.anime_id %>">
+              <%= anime.name %> - <%= anime.score %> *
+            </a>
+          </li>
+        <% }); %>
+      </ol>  
+    </section>
+  </main>
 
-<h2>Animes - Scores</h2>
-<ol>
-  <% animes.forEach((anime) => { %>
-    <li>
-      <a href="/animes/<%= anime.anime_id %>">
-        <%= anime.name %> - <%= anime.score %> *
-      </a>
-    </li>
-  <% }); %>
-</ol>
+  
+  <!--<form action="/logout" method="get">
+    <button type="submit" class="btn btn-danger">Log out</button>
+  </form> -->
+</body>
+</html>
 
-<form action="/logout" method="get">
-  <button type="submit">Log out</button>
-</form>
+

@@ -1,27 +1,44 @@
-<h1><%= anime.name %></h1>
-<ul>
-    <li>
-      <p>Name</p>
-      <%= anime.name %>
-    </li>
-    <li>
-      <p>Sinopse</p>
-      <%= anime.sinopse %>
-    </li>
-    <li>
-      <p>Score</p>
-      <%= anime.score %>
-    </li>
-    <li>
-      <p>Ratings</p>
-      <%= anime.ratings %>
-    </li>
-    <li>
-      <p>Season</p>
-      <%= anime.season %>
-    </li>
-    <li>
-        <p><%= userRating && userRating.score != null > 0 ? 'Your rating' : 'Rate now' %></p>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <% include header.ejs %>
+  <% include nav.ejs %>
+  <title><%= anime.name %></title>
+</head>
+<body>
+  <main>
+    <section class="default-container animes-profile">
+      <h1><%= anime.name %></h1>
+      <ul>
+        <li>
+          <p>Name</p>
+          <%= anime.name %>
+        </li>
+        <li>
+          <p>Sinopse</p>
+          <%= anime.sinopse %>
+        </li>
+        <li>
+          <p>Score</p>
+          <%= anime.score %>
+        </li>
+        <li>
+          <p>Ratings</p>
+          <%= anime.ratings %>
+        </li>
+        <li>
+          <p>Season</p>
+          <%= anime.season %>
+        </li>
+      </ul>
+      
+      <section class="rating-section">
+        <p>
+          <%= userRating && userRating.score != null > 0 ? 'Your rating' : 'Rate now' %>
+        </p>
         <form action="" method="post">
           <select name="score" id="select-score">
             <option value="0">0</option>
@@ -37,23 +54,32 @@
             <option value="5">5</option>
           </select>
           <button>
-            <%= userRating && userRating.score != null ? 'Rate again' : 'Rate' %>
+            <%= userRating && userRating.score != null ? 'Rate again!' : 'Rate!' %>
           </button>
           <!-- <input type="hidden" name="anime_id" value="<%= anime.anime_id %>"> -->
         </form>
-      </li>
-</ul>
-<input type="hidden" id="hidden-score" value="<%- userRating ? userRating.score : '-1' %>">
-<button onclick="location.href='/'">Home</button>
-
-<form action="/logout" method="get">
-  <button type="submit">Log out</button>
-</form>
-
+      </section>  
+      <input
+      type="hidden"
+      id="hidden-score"
+      value="<%- userRating ? userRating.score : '-1' %>"
+      />
+    </section>
+  </main>
+  
+  <!-- <button onclick="location.href='/'" class="btn btn-primary">Home</button>
+    
+    <form action="/logout" method="get">
+      <button type="submit" class="btn btn-danger">Log out</button>
+    </form> -->
+    
+</body>
 <script>
-  let userScore = document.getElementById('hidden-score').value;
-  console.log('script user rating =', userScore)
-  Array.from(document.getElementById('select-score').options).forEach(e => {
+  let userScore = document.getElementById("hidden-score").value;
+  console.log("script user rating =", userScore);
+  Array.from(document.getElementById("select-score").options).forEach(e => {
     if (e.value == parseFloat(userScore)) e.selected = true;
   });
-</script>
+  </script>
+
+</html>
