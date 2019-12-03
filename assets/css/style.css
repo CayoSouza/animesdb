@@ -34,6 +34,10 @@ nav a {
   padding: .5em;
 }
 
+nav li:first-child {
+  color: #620000;
+}
+
 a {
   text-decoration: none;
 }
@@ -43,8 +47,9 @@ a:visited {
 }
 
 a:hover {
+  border-radius: 2px;
   background-color: rgba(255,255,255, .7);
-  transition: .3s;
+  transition: .5s;
 }
 
 body, .default-container {
@@ -67,6 +72,10 @@ body, .default-container {
 
 ol {
   padding: .5em;
+}
+
+ul {
+  padding: 0;
 }
 
 ul li {
@@ -102,6 +111,7 @@ form button:hover {
 }
 
 h1 {
+  font-size: 1.5em;
   margin-bottom: 10px;
 }
 
@@ -148,4 +158,8 @@ h1 {
 #form-delete input:hover {
   color: #620000;
   transition: .3s;
+}
+
+input {
+  color: #333;
 }
