@@ -56,7 +56,11 @@
           <button>
             <%= userRating && userRating.score != null ? 'Rate again!' : 'Rate!' %>
           </button>
-          <!-- <input type="hidden" name="anime_id" value="<%= anime.anime_id %>"> -->
+        </form>
+        <form action="/animes?_method=DELETE" method="POST" id='form-delete'
+          onsubmit="return confirm('Are you sure you want to delete this anime forever?')">
+          <input type="hidden" name="anime_id" value="<%= anime.anime_id %>">
+          <input type="submit" value="Delete">
         </form>
       </section>  
       <input

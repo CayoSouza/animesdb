@@ -93,7 +93,7 @@ const createUser = async (req, res) => {
 //ANIMES
 
 const getAnimes = (req, res) => {
-  pool.query('SELECT * FROM animes ORDER BY score DESC', (error, results) => {
+  pool.query('SELECT * FROM animes ORDER BY -score ASC', (error, results) => {
     if (error) {
       throw error
     }
@@ -106,9 +106,9 @@ const getAnimeById = async (req, res) => {
   pool.query('SELECT * FROM animes WHERE anime_id = $1', 
   [id], (error, results) => {
     if (error) {
-      throw error
+      console.log(error)
     }
-    res.status(200).json(results.rows[0])
+    res.status(200).json(results ? results.rows[0] : null)
   })
 }
 
@@ -131,6 +131,18 @@ const createAnime = async (req, res) => {
     res.status(500).send()
   }
 
+}
+
+const deleteAnimeById = async (req, res) => {
+  const { id } = req.params
+  console.log('Deleting anime with id:', id);
+  pool.query('DELETE FROM animes WHERE anime_id = $1', 
+  [id], (error, results) => {
+    if (error) {
+      console.log(error)
+    }
+    res.status(200);
+  })
 }
 
 //RATINGS
@@ -181,7 +193,6 @@ const rate = async (req, res) => {
       if (error) {
         console.log(error)
       }
-
       res.status(200);
     })
   })
@@ -205,6 +216,7 @@ module.exports = {
   getAnimes,
   createAnime,
   getAnimeById,
+  deleteAnimeById,
   getRatingsByUserId,
   getRatingsByAnimeIdAndUserId,
   rate,

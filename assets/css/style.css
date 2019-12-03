@@ -1,0 +1,151 @@
+@import url('https://fonts.googleapis.com/css?family=Bebas+Neue&display=swap');
+
+* {
+  box-sizing: border-box;
+  font-family: 'Bebas Neue', cursive;
+  color: #333;
+}
+
+html {
+  background-color: rgba(0, 0, 0, 0.5);
+  background-image: url('/assets/images/background.jpg');
+  background-blend-mode: multiply;
+  background-size: cover;
+}
+
+nav {
+  text-align: center;
+  font-size: 1.1em;
+  font-weight: lighter;
+  border-bottom: 1px solid rgba(255,255,255, .6);
+  border-radius: 5px;
+  background-color: rgba(255,255,255, .4);  
+  min-width: 250px;
+  max-width: 400px;
+}
+
+nav li {
+  display: inline;
+  padding: .5em;
+}
+
+nav a {
+  display: inline-block;
+  padding: .5em;
+}
+
+a {
+  text-decoration: none;
+}
+
+a:visited {
+  color: #333;
+}
+
+a:hover {
+  background-color: rgba(255,255,255, .7);
+  transition: .3s;
+}
+
+body, .default-container {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.default-container {
+  margin-top: 5%;
+  padding-bottom: 5px;
+  min-width: 250px;
+  max-width: 400px;
+  border-radius: 5px;
+  background-color: rgba(255, 255, 255, 0.55);
+  justify-content: space-around;
+  align-items: center;
+}
+
+ol {
+  padding: .5em;
+}
+
+ul li {
+  list-style-type: none;
+}
+
+.default-container p {
+  margin: 0;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+form input, form button {
+  border-radius: 10px;
+}
+
+form input, form label {
+  margin: .1em;
+}
+
+form button {
+  margin-top: 5%;
+}
+
+form button:hover {
+  color: #10803b;
+  transition: .3s;
+}
+
+h1 {
+  margin-bottom: 10px;
+}
+
+.animes-profile {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start !important;
+}
+
+.animes-profile ul {
+  padding: 0;
+}
+
+.animes-profile p {
+  color: #620000;
+}
+
+.default-container h1 {
+  color: #620000;
+}
+
+.rating-section {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  text-align: center;
+}
+
+.rating-section p {
+  color: #10803b;
+}
+
+.ranking {
+  font-size: 1.2em;
+}
+
+#form-delete {
+  display: flex;
+  justify-content: flex-end;
+  align-items: flex-end;
+  min-width: 200px;
+}
+
+#form-delete input:hover {
+  color: #620000;
+  transition: .3s;
+}

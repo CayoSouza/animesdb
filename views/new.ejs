@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <% include header.ejs %>
+  <% include nav.ejs %>
+  <title>New anime</title>
+</head>
+<body>
+  <main>
+    <section class="default-container">
+        <h1>Create new anime</h1>
+        <form action="/anime/create" method="POST">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" required>
+            <label for="sinopse">sinopse</label>
+            <textarea name="sinopse" id="sinopse" cols="20" rows="10"></textarea>
+            <label for="season">season</label>
+            <input type="text" id="season" name="season">
+          <button type="submit" class="btn btn-success">Create</button>
+        </form>
+      </section>
+  </main>
+</body>
+</html>

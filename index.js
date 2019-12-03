@@ -7,6 +7,7 @@ const flash = require('express-flash')
 const session = require('express-session')
 const passport = require('passport')
 const initPassport = require('./configs/passport-config')
+const methodOverride = require('method-override')
 
 initPassport(passport, 
   async email => {
@@ -40,6 +41,8 @@ app.use(session({
 }))
 app.use(passport.initialize())
 app.use(passport.session())
+app.use('/assets', express.static('assets'))
+app.use(methodOverride('_method'))
 
 app.get('/', checkAuthenticated, async(req, res) => {
   const user = req.user;
@@ -134,19 +137,20 @@ app.get('/animes/:id', checkAuthenticated, async (req, res) => {
   console.log('anime =', anime);
   console.log('userRating =', userRating);
   res.render('anime.ejs', {
+    user: req.user,
     anime: anime,
     userRating: userRating
   })
 });
 
-app.post('/animes/:id', async (req, res) => {
+app.post('/animes/:id', checkAuthenticated, async (req, res) => {
   const { score } = req.body;
   const { user_id } = req.user;
   const { id } = req.params;
   console.log('id==',req.params.id)
   const uri = `/user/${user_id}/rate/anime/${id}/score/${score}`;
   console.log('uri =', uri);
-  var options = {
+  let options = {
     method: 'POST',
     uri: process.env.REST_BASE_URL + uri,
     json: true
@@ -158,6 +162,44 @@ app.post('/animes/:id', async (req, res) => {
     // res.redirect('/');
 })
 
+app.get('/anime/create', checkAuthenticated, (req, res) => {
+  res.render('new.ejs', { user: req.user })
+})
+
+app.delete('/animes', async(req, res) => {
+  const { anime_id } = req.body;
+  const uri = `/animes/${anime_id}`;
+
+  let options = {
+    method: 'DELETE',
+    uri: process.env.REST_BASE_URL + uri,
+    json: true
+  }
+
+  await rp(options)
+    .then(res.redirect('/')) 
+    .catch(err => console.log);
+})
+
+app.post('/anime/create', async(req, res) => {
+  const { name, sinopse, season } = req.body;
+  const uri = '/animes';
+
+  let options = {
+    method: 'POST',
+    uri: process.env.REST_BASE_URL + uri,
+    json: true,
+    body: {
+      name: name,
+      sinopse: sinopse,
+      season: season
+    }
+  }
+
+  await rp(options)
+    .then(res.redirect('/')) 
+    .catch(err => console.log);
+})
 
 //===================== REST API =====================//
 
@@ -171,6 +213,7 @@ app.post('/rest/users', db.createUser)
 app.get('/rest/animes', db.getAnimes)
 app.post('/rest/animes', db.createAnime)
 app.get('/rest/animes/:id', db.getAnimeById)
+app.delete('/rest/animes/:id', db.deleteAnimeById)
 
 //RATINGS
 app.get('/rest/ratings/user/:id', db.getRatingsByUserId)
